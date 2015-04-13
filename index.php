@@ -11,8 +11,9 @@
 		 
 ?>
 
-<html>
-<!--THIS IS HTML COMMENT SYNTAX -->
+<html> <!--everything between <html> and </html> describes the document-->
+<!--THIS IS HTML COMMENT SYNTAX --> 
+<!--This is a test comment -->
 
 
 
@@ -20,13 +21,13 @@
 
  
  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
- <script src="http://www.imcanalytics.com/js/jquery.popupoverlay.js"></script>
- <style>
+ <script src="http://www.imcanalytics.com/js/jquery.popupoverlay.js"></script> <!-- <style>  helps to change the default style of the html elelement in this case the dimensions of the section -->
+ <style> 
  section {
     width: 90%;
     height: 200px;
     margin: auto;
-    padding: 10px;
+    padding: 10px; 
 }
 
 #one {
@@ -113,10 +114,39 @@
 //This is JS comment syntax.
 //cookie will go here.
 
+function checkCookie() { //function is used to return the value of the created cookie
+
+    var userdeets = getCookie("readuser");
+    if (userdeets != "") {
+      var deets = userdeets.split("%-");
+    var user = deets[0];
+    //namediv.innerHTML = '';//the statement has been commented out as it was throwing up an error on the webpage
+    greeting.innerHTML = 'Welcome ' + user;
+    //document.getElementById('deletecookie').style.display = "block"; //the statement has been commented out as it was throwing up an error on the webpage
+  } else { return "";
+  }
+}
+
+function getCookie(cname) {//the function getCookie is used to check whethere the cookie has been set or not and cname is the name of the cookie
+
+    var name = cname + "=";//var name creates the variable name 
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) {
+        var c = ca[i].trim();
+        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+    }
+    return "";
+}
+
+function drop_cookie(name) {
+  document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;'; //the syntax document.cookie is used to create the cookie and it gets deleted once the browser is closed based on the expiry date
+  location.reload();
+}
+
 </script>
 
  </head>
- <body>
+ <body onload="checkCookie()">
  <div style="width:100%; height:25%; background-color:#57585A;">
  <img src="img/ic1.jpg" style="max-height: 100%;">
     <div style="float:right; margin-right:75px;margin-top:10px; color:white;"> Cart: <?php echo $CARTCOUNT ?> </div>
