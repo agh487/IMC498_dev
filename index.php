@@ -114,22 +114,39 @@
 //This is JS comment syntax.
 //cookie will go here.
 
-function checkCookie() { //function is used to return the value of the created cookie
+function mixCookie() {
+
+      var name = document.forms["form1"]["name"].value;
+
+        bakeCookie("readuser", name, 365);
+      
+   }
+   
+function bakeCookie(cname, cvalue1, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+d.toGMTString();
+    document.cookie = cname + "=" + cvalue1 + ";" + expires;
+}
+
+//TWO FUNCTIONS TO GET THE COOKIE
+
+function checkCookie() {
 
     var userdeets = getCookie("readuser");
     if (userdeets != "") {
       var deets = userdeets.split("%-");
     var user = deets[0];
-    //namediv.innerHTML = '';//the statement has been commented out as it was throwing up an error on the webpage
+    namediv.innerHTML = '';
     greeting.innerHTML = 'Welcome ' + user;
-    //document.getElementById('deletecookie').style.display = "block"; //the statement has been commented out as it was throwing up an error on the webpage
+    document.getElementById('deletecookie').style.display = "block";
   } else { return "";
   }
 }
 
-function getCookie(cname) {//the function getCookie is used to check whethere the cookie has been set or not and cname is the name of the cookie
+function getCookie(cname) {
 
-    var name = cname + "=";//var name creates the variable name 
+    var name = cname + "=";
     var ca = document.cookie.split(';');
     for(var i=0; i<ca.length; i++) {
         var c = ca[i].trim();
@@ -138,15 +155,11 @@ function getCookie(cname) {//the function getCookie is used to check whethere th
     return "";
 }
 
-function drop_cookie(name) {
-  document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;'; //the syntax document.cookie is used to create the cookie and it gets deleted once the browser is closed based on the expiry date
-  location.reload();
-}
-
 </script>
+</head>
 
- </head>
- <body onload="checkCookie()">
+<body onload="checkCookie()">
+
  <div style="width:100%; height:25%; background-color:#57585A;">
  <img src="img/ic1.jpg" style="max-height: 100%;">
     <div style="float:right; margin-right:75px;margin-top:10px; color:white;"> Cart: <?php echo $CARTCOUNT ?> </div>
