@@ -40,7 +40,7 @@ if (mysqli_connect_errno()) {
 		   ${"BOOKPRICE1"} = $row[Price];
 		   }
 		  } else 
-		  { $n=1; 
+		  { $n=1;  // if the customer is not already on the database, then the default options load where there is a book from each of the 4 categories
 		  }
 		  while($row = mysqli_fetch_array($search2)) {
 		  if($row[bid] != $LATEST){
@@ -68,7 +68,7 @@ if (mysqli_connect_errno()) {
       }
      }	  else { 
 		 $GREETING = 'Welcome Guest. <a href="#" class="my_popup_open">Log on</a> for recommendations.';
-	//MIDTERM ADDITIONS - SET BOOKS FOR LOGGED OUT VISITORS
+	//MIDTERM ADDITIONS - SET BOOKS FOR LOGGED OUT VISITORS: shows the default books for site vistiors with no history data
 		 $n=1;
 		 $search4 = mysqli_query($con,"SELECT * FROM `Bookdetails` WHERE bid in (100,200,300,400)");
            while($row = mysqli_fetch_array($search4)) {
@@ -187,14 +187,17 @@ if (mysqli_connect_errno()) {
    $.fn.DeetsBox = function(bid) {
         if(bid == '1'){	
 	//MIDTERM ADDITIONS - NEW VARIABLES AND CONDITIONS
-		var bookname = $( "#book1" ).val();
+	//If then conditional statement for purchase - pulls the book name and book prices under the condition that there is nothing in the cart or that the member 
+	//is new therefore one book from each category will pop up (in case of a log in
+	// where the data is stored in the database, it pulls up your cart details and pushes book recommendations similar to the category of the book in your cart), 
+		var bookname = $( "#book1" ).val(); //
 		var bookprice = $( "#book1price" ).val();
 		$("#showbookdeets").html(bookname + "<p>" + bookprice); //<p> is paragraph break
 		$("#bookshelf").val('1'); 
 		 var fromcart = $( "#iscart" ).val();
 		 if(fromcart != 0){
 		 
-		 $("#deetcta").text('Purchase'); } //becasue book1 is in the cart
+		 $("#deetcta").text('Purchase'); } //because book1 is in the cart
 		
 		}
 
@@ -202,14 +205,14 @@ if (mysqli_connect_errno()) {
 		var bookname = $( "#book2" ).val();
 		var bookprice = $( "#book2price" ).val();
 		$("#showbookdeets").html(bookname + "<p>" + bookprice); //<p> indicates paragraph break
-		$("#bookshelf").val('2'); 
+		$("#bookshelf").val('2'); //since book 2 is not in the cart and only in the preferences
 		}
 	
 			else if(bid == '3'){
 		var bookname = $( "#book3" ).val();
 		var bookprice = $( "#book3price" ).val();
 		$("#showbookdeets").html(bookname + "<p>" + bookprice); //<p> indicates paragraph break
-		$("#bookshelf").val('3'); 
+		$("#bookshelf").val('3'); //since book 3 is not in the cart and only in the preferences
         }
 			
 			else if(bid == '4'){
@@ -317,7 +320,7 @@ function post(path, params, method) {
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-  ga('create', 'UA-61812395-1', 'auto');
+  ga('create', 'UA-61812395-1', 'auto'); //tracks the activity on your web page after you specify your GA username code
   ga('send', 'pageview');
 
 </script>
@@ -354,16 +357,19 @@ function post(path, params, method) {
   <!--MIDTERM ADDITIONS - NEW HIDDEN FIELD - USED FOR BOOK1 CTA -->
  <input type="hidden" id="iscart" value="<?php echo $LATEST ?>">
  
- 
+ <!-- The line above calls in the image from where it is stored. The lines below call in the book title, author and price. The items are hidden 
+ because it allows for the dynamic calling of the books.
+MIDTERM ADDITIONS - ADDED BOOKPRICE. MADE BOOK DYNAMIC - this pulls up the information from the database about the book title, price, book image. 
+If there is no book in the cart, you will get the option to learn more about recommendations that are dynamically sent to you based on the book that is in the cart --> 
 
  
  <div id="cta1"> Please browse our options:</div>
  <section>
  <div id="one" style="padding:10px;">
-	<?php echo $BOOK1; ?>
+	<?php echo $BOOK1; ?> <!--echo function is used to display or call out the info-->
 	<img src="img/<?php echo $BOOKPIC1 ?>" style="float:left; margin-right:6px; height: 100px;">
 	
-<!-- MIDTERM ADDITIONS - ADDED BOOKPRICE. MADE BOOK DYNAMIC -->
+<!-- MIDTERM ADDITIONS - ADDED BOOKPRICE. MADE BOOK DYNAMIC/customisation so that books appear based on the customer's preferences and book added to cart--> 
     <input type="hidden" id="book1" value="<?php echo $BOOKTITLE1 ?>">
 	<input type="hidden" id="book1price" value="<?php echo $BOOKPRICE1 ?>">
 	
@@ -371,13 +377,13 @@ function post(path, params, method) {
 	by <?php echo $BOOKAUTH1 ?> <p>
 	<?php echo $BOOKDESC1 ?>
 	<p>
-	<?php if($LATEST != 0){ ?> 
-	<input type="button" value="Purchase" id="book1button" onlick="$(this).DeetsBox(1);">
+	<?php if($LATEST != 0){ ?> <!--if statement used only for book 1 as book1 is the one added to cart -->
+	<input type="button" value="Purchase" id="book1button" onclick="ga('send', 'event', 'convert', 'purchase', document.getElementById('book1').value);$(this).DeetsBox(1);"> <!-- the ga code for the event to track converts to purchases that can be seen in real time on the GA account-->
 	<?php } else { ?>
-	<input type="button" value="Learn More" id="book1button" onClick="ga('send', 'event', 'browse', 'learn_more_home', document.getElementById('book1').value); $(this).DeetsBox(1);">
+	<input type="button" value="Learn More" id="book1button" onClick="ga('send', 'event','browse', 'learn_more_home', document.getElementById('book1').value); $(this).DeetsBox(1);"><!-- the ga code for the event to track browsing activity and cart adds that can be seen in real time on the GA account-->
 	<?php } ?>
-	</div>
-	
+	</div>   
+	<!--GA code for track purchase has been added only for Book 1 as that is the only book that has been added to cart by customer Sheryl-->
 
  <div id="two" style="padding:10px;">
 	<?php echo $BOOKID2; ?>
@@ -415,12 +421,12 @@ if($n > 4){ ?>
     <input type="hidden" id="book4price" value="<?php echo $BOOKPRICE4 ?>">
 
 	<strong><?php echo $BOOKTITLE2 ?></strong><p>
-	by <?php echo $BOOKAUTH4 ?> <p>
-	<?php echo $BOOKDESC4 ?>
+	by <?php echo $BOOKAUTH4 ?> <p> 
+	<?php echo $BOOKDESC4 ?> <!--displays the book description-->
 	<p>
 	<input type="button" value="Learn More" id="book4button" onClick="$(this).DeetsBox(4)";>
 	</div>
-	<?php } else { ?>
+	<?php } else { ?> <!--for customers where the book preferences may not have a 4th book -->
 	<div id="four" style="padding:10px;"></div>
 	<?php } ?>
 	
