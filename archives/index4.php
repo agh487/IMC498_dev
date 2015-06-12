@@ -18,32 +18,14 @@ if (mysqli_connect_errno()) {
 	     $UNAME = ($_POST['name']);
 		 $GREETING = 'Welcome back '. $UNAME.'.';
 		 
-	//MIDTERM ADDITIONS - SQL SELECT TO GET USER DETAILS...final: defined all the variables from the DB	
+	//MIDTERM ADDITIONS - SQL SELECT TO GET USER DETAILS	
 		 $search1 = mysqli_query($con,"SELECT * FROM `Customer` WHERE FIRST = '". $UNAME ."'");
 		 if(mysqli_num_rows($search1) > 0){
 		 while($row = mysqli_fetch_array($search1)) {
 		  $CARTCOUNT = $row[CartItems];
 		  $PREF = $row[Pref];
 		  $LATEST = $row[LastCart];
-		  $NUM =$row[PurchNum]; //finals started adding here
-		  $TOT= $row[PurchTot];
-		  $SCORE= "75"; //WILL COME FROM DB
-		  $DAYS=$row[PurchDays];
-
-
-		  //My Calculation
-
-		  if ($DAYS < 10) {$DAYSCORE = 1;} else {$DAYSCORE = 0;} // the if else statements helped define the variables that we will use to split the database for the two kinds of offers
-		  $AVGPURCH=$TOT/$NUM;   
-		  if ($AVGPURCH >19.99) {$PURCHSCORE = 1; } else {${PURCHSCORE = 0;}} // DAYS represents the days since last purchase and AVGPURCH represents total purchase value/no.of purchases 
-          
-          $MYSCORE = $DAYSCORE + $PURCHSCORE;  
-
-		  // finals additions until here
-
-
 		  }
-		  
 	//MIDTERM ADDITIONS - LOGIC TO SET BOOKS
 	      $search2 = mysqli_query($con,"SELECT * FROM `Bookdetails` WHERE CatID = '". $PREF ."'"); //the var con gives all the database information
 		  if($LATEST != 0) {
@@ -250,13 +232,11 @@ if (mysqli_connect_errno()) {
 
 //TWO FUNCTIONS TO SET THE COOKIE
 
-// FINALS 
 function mixCookie() {
 
  	    var name = document.forms["form1"]["name"].value;
- 	    var userpref = document.getElementById("pref").value; //added var userpref to remeber the book preferences rather than what is in the cart
 
-        bakeCookie("readuser", name, userpref, 365);//added userpref
+        bakeCookie("readuser", name, 365);
 			
    }
    
@@ -264,7 +244,7 @@ function bakeCookie(cname, cvalue1, cvalue2, exdays) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
     var expires = "expires="+d.toGMTString();
-    document.cookie = cname + "=" + cvalue1 + "%-" + cvalue2 + ";" + expires; // FINALS: cvalue2 and the quotes around %-
+    document.cookie = cname + "=" + cvalue1 + "%-" + cvalue2 + ";" + expires;
 }
 
 //TWO FUNCTIONS TO GET THE COOKIE
@@ -277,12 +257,11 @@ function checkCookie() {
     if (userdeets != "") {
 	    var deets = userdeets.split("%-");
 		var user = deets[0];
-		var user = deets [1]; // FINALS ADDED THIS LINE
 		
 //MIDTERM ADDITIONS - NEW NESTED 'IF' LOGIC TO POST USERNAME TO PHP TO CHECK FOR DETAILS THROUGH SQL		
 		 if(checkfirst != 1){
 		  
-		  post('index.php',{name:user,cookie:'yes'}); //FINALS ADDED '' AROUND YES 
+		  post('index.php',{name:user,cookie:yes});
 		  
 		 } else { greeting.innerHTML = 'Welcome ' + user; }
 	     
@@ -378,9 +357,6 @@ function post(path, params, method) {
   <!--MIDTERM ADDITIONS - NEW HIDDEN FIELD - USED FOR BOOK1 CTA -->
  <input type="hidden" id="iscart" value="<?php echo $LATEST ?>">
  
-  <!--FINAL ::: ADDITIONS - NEW HIDDEN FIELD - USED FOR the preferences  -->
- <input type="hidden" id="pref" value="<?php echo $PREF ?>">  <!--If a name entered in the “name” field is found in the DB, add the preference to cookie-->
-
  <!-- The line above calls in the image from where it is stored. The lines below call in the book title, author and price. The items are hidden 
  because it allows for the dynamic calling of the books.
 MIDTERM ADDITIONS - ADDED BOOKPRICE. MADE BOOK DYNAMIC - this pulls up the information from the database about the book title, price, book image. 
@@ -450,29 +426,8 @@ if($n > 4){ ?>
 	<p>
 	<input type="button" value="Learn More" id="book4button" onClick="$(this).DeetsBox(4)";>
 	</div>
-
-	<!--!!!-FINAL AREA-!!! to split the database based on the score to know which offer to give -->
 	<?php } else { ?> <!--for customers where the book preferences may not have a 4th book -->
-	
-	<div id="four" style="padding:10px;"> <!--started adding here on -->
-		<?PHP
-
-// FINAL  - splitting the database on the basis of the given score (50-75 and 75-100) and MYSCORE 
-        if ($SCORE>=50 && $SCORE<=75){
-            echo "Special Offer Book <br> ";
-        } else if ($SCORE>75 && $SCORE<=100){
-            echo "<a href=\"#\" onClick=\"ga('send', 'event', 'banner click', 'deal banner', 0)\"> Deal Banner </a><br> "; 
-
-    //FINAL  - added GA tag to track who clicks on the Deal Banner offer link
-        }
-        
-    {
-    if ($MYSCORE < '2') {echo "offer type 1";} // here based on the assigned score, if myscore is less than 2, the customer will be shown 'free shipping blah blah otherwise i'
-    else {echo "offer type 2";}
-    }
-    ?>
-<!--added till here-->
-	</div>
+	<div id="four" style="padding:10px;"></div>
 	<?php } ?>
 	
 </section>
